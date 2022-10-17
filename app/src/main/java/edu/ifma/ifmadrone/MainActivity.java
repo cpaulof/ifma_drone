@@ -6,11 +6,13 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -45,16 +47,18 @@ public class MainActivity extends AppCompatActivity {
     };
     private static final int REQUEST_PERMISSION_CODE = 12345;
 
-    private TextView regStatus;
+    private TextView productLabel;
+    private TextView statusLabel;
+    private Button btnOpen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        statusLabel = findViewById(R.id.statusLabel);
+        productLabel = findViewById(R.id.productLabel);
+        btnOpen = findViewById(R.id.btnOpen);
 
-
-        regStatus = findViewById(R.id.regStatus);
-        regStatus.setText("clique para registrar");
     }
 
     private void checkAndRequestPermissions() {
@@ -67,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
         }
         // Request for missing permissions
         if (missingPermission.isEmpty()) {
-            regStatus.setText("registrando");
             startSDKRegistration();
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions((Activity) this,
@@ -78,9 +81,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void registerApp(View view){
-        regStatus.setText("Checando permissoes...");
-        checkAndRequestPermissions();
 
+        statusLabel.setText("Registrando!");
+        checkAndRequestPermissions();
+    }
+
+    public void openVideo(View view){
+        Intent videoView = new Intent(this, VideoViewActivity.class);
+        startActivity(videoView);
     }
 
     private void startSDKRegistration(){
@@ -91,12 +99,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRegister(DJIError djiError) {
                 if (djiError == DJISDKError.REGISTRATION_SUCCESS) {
-                    regStatus.setText("Registrado!!!!");
                     DJILog.e("App registration", DJISDKError.REGISTRATION_SUCCESS.getDescription());
                     DJISDKManager.getInstance().startConnectionToProduct();
 
                 } else {
-                    regStatus.setText(djiError.getDescription());
+                    statusLabel.setText(djiError.getDescription());
                 }
                 Log.v(TAG, djiError.getDescription());
             }
@@ -107,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProductConnect(BaseProduct baseProduct) {
                 Log.d(TAG, String.format("onProductConnect newProduct:%s", baseProduct));
+                statusLabel.setText("Produto Conectado!");
+                productLabel.setText(baseProduct.getModel().getDisplayName());
+                btnOpen.setEnabled(true);
             }
 
             @Override

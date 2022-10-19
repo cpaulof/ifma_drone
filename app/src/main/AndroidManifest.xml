@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- SDK permission requirement -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -16,15 +15,13 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <uses-feature
         android:name="android.hardware.usb.host"
-        android:required="false"/>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.usb.accessory"
-        android:required="true"/>
-
-
-    <!-- SDK requirement permission end -->
+        android:required="true" />
 
     <application
         android:name=".MainApplication"
@@ -36,15 +33,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.IFMADrone">
+        <activity
+            android:name=".VideoFeedActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
 
-        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <meta-data
             android:name="com.dji.sdk.API_KEY"
-            android:value="23547bea16c12f4d15853a33"/>
-        <!-- Required for receiving accessory attachment events.
-            This is necessary for product when connecting over USB. -->
-
+            android:value="23547bea16c12f4d15853a33" />
+        <!--
+ Required for receiving accessory attachment events.
+            This is necessary for product when connecting over USB.
+        -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -54,12 +61,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"/>
+                <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
             </intent-filter>
+
             <meta-data
                 android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
-                android:resource="@xml/accessory_filter"/>
-
+                android:resource="@xml/accessory_filter" />
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

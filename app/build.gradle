@@ -203,6 +203,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        mlModelBinding true
+    }
 }
 
 dependencies {
@@ -219,6 +222,8 @@ dependencies {
         exclude module: 'library-anti-distortion'
         //exclude module: 'fly-safe-database'
     })
+    //implementation 'org.tensorflow:tensorflow-lite-support:0.1.0'
+    //implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0'
     compileOnly 'com.dji:dji-sdk-provided:4.16.2'
 
     implementation 'androidx.appcompat:appcompat:1.0.0'
@@ -247,4 +252,7 @@ dependencies {
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view:3.10.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.4'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+
+    implementation project(":tflite_wrapper")
+
 }

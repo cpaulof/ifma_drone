@@ -14,3 +14,4 @@ pluginManagement {
 //}
 rootProject.name = "IFMA Drone"
 include ':app'
+include ':tflite_wrapper'

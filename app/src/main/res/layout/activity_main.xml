@@ -16,7 +16,14 @@
     <Button
         android:id="@+id/registerApp"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:text="Button"
-        android:onClick="registerApp"/>
+        android:layout_height="wrap_content"
+        android:onClick="registerApp"
+        android:text="Registrar" />
+
+    <Button
+        android:id="@+id/btn_abrir"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="abrirVideo"
+        android:text="Abrir" />
 </LinearLayout>

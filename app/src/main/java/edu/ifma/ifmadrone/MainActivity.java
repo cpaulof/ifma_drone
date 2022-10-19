@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -82,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
         checkAndRequestPermissions();
 
     }
+    public void abrirVideo(View view){
+        Intent intent = new Intent(this, VideoFeedActivity.class);
+        startActivity(intent);
+    }
 
     private void startSDKRegistration(){
         DJISDKManager.getInstance().getLDMManager().setModuleNetworkServiceEnabled(new LDMModule.Builder().moduleType(
@@ -107,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProductConnect(BaseProduct baseProduct) {
                 Log.d(TAG, String.format("onProductConnect newProduct:%s", baseProduct));
+                regStatus.setText("Produto conectado!");
             }
 
             @Override

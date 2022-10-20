@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.view.TextureView;
+import android.view.View;
 import android.widget.TextView;
 
 import org.tensorflow.lite.support.image.TensorImage;
@@ -25,6 +26,9 @@ public class VideoFeedActivity extends AppCompatActivity {
     VideoFeeder.VideoDataListener videoDataListener;
     Movenet model = null;
     TextView resultLabel;
+    TextView resultLabel2;
+
+    private DroneManualControl droneManualControl = null;
 
 
 
@@ -34,6 +38,12 @@ public class VideoFeedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video_feed);
         videoFeedView = findViewById(R.id.textureView);
         resultLabel = findViewById(R.id.resultLabel);
+        resultLabel2 = findViewById(R.id.resultLabel2);
+
+        if(droneManualControl == null){
+            droneManualControl = new DroneManualControl();
+            resultLabel2.setText("Inicado drone manual control");
+        }
 
         try {
             model = Movenet.newInstance(this);
@@ -44,6 +54,31 @@ public class VideoFeedActivity extends AppCompatActivity {
         init();
 
 
+    }
+
+    public void ativar(View view){
+        if(droneManualControl!=null){
+            droneManualControl.enableVirtualStick();
+        }
+    }
+
+    public void desativar(View view){
+        if(droneManualControl!=null){
+            droneManualControl.disableVirtualStick();
+        }
+    }
+
+    public void takeOff(View view){
+        if(droneManualControl!=null){
+            droneManualControl.takeOff();
+
+        }
+    }
+
+    public void land(View view){
+        if(droneManualControl!=null){
+            droneManualControl.testRoll();
+        }
     }
 
     private void init(){
@@ -61,6 +96,8 @@ public class VideoFeedActivity extends AppCompatActivity {
                             UsbAccessoryService.VideoStreamSource.Camera);
 
                 }
+
+
 
             }
 
@@ -80,12 +117,14 @@ public class VideoFeedActivity extends AppCompatActivity {
                     TensorImage tensorImage = TensorImage.fromBitmap(videoFeedView.getBitmap());
                     Movenet.Outputs results = model.process(tensorImage);
                     float[] r = results.getKeypointsAsTensorBuffer().getFloatArray();
-                    float nose_x = r[0];
-                    float nose_y = r[1];
+                    float nose_y = r[0];
+                    float nose_x = r[1];
                     float score = r[2];
                     resultLabel.setText("X:"+nose_x+" Y:"+nose_y+" Score:"+score);
+                    if(droneManualControl!=null){
+                        droneManualControl.calcMovement(nose_x, nose_y, score);
+                    }
                 }
-
             }
         });
 

@@ -4,8 +4,8 @@
 4
 5    <uses-sdk
 6        android:minSdkVersion="1"
-6-->C:\Users\copfn\ifma_drone\ifma_drone\tflite_wrapper\src\main\AndroidManifest.xml
+6-->C:\Users\Pessoal\ifma_drone\tflite_wrapper\src\main\AndroidManifest.xml
 7        android:targetSdkVersion="31" />
-7-->C:\Users\copfn\ifma_drone\ifma_drone\tflite_wrapper\src\main\AndroidManifest.xml
+7-->C:\Users\Pessoal\ifma_drone\tflite_wrapper\src\main\AndroidManifest.xml
 8
 9</manifest>

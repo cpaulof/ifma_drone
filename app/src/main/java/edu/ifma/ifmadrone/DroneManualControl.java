@@ -74,6 +74,7 @@ public class DroneManualControl {
 
     public void calcMovement(float x, float y, float score){
         if(score < 0.4) return;
+
         float xOffset = x - 0.5f;
         float yOffset = Math.abs(y - 0.5f);
 
@@ -82,15 +83,16 @@ public class DroneManualControl {
         throttle = .0f;
         roll = .0f;
 
-        if(xOffset > 0.2)
-            roll = 0.3f;
-        else if(xOffset < -0.2)
-            roll = -0.3f;
+        if(xOffset > 0.1)
+            roll = 0.2f;
+        else if(xOffset < -0.1)
+            roll = -0.2f;
 
         if (null == sendVirtualStickDataTimer) {
+
             sendVirtualStickDataTask = new SendVirtualStickDataTask();
             sendVirtualStickDataTimer = new Timer();
-            sendVirtualStickDataTimer.schedule(sendVirtualStickDataTask, 100, 200);
+            sendVirtualStickDataTimer.schedule(sendVirtualStickDataTask, 0, 100);
         }
     }
 
@@ -103,7 +105,7 @@ public class DroneManualControl {
         if (null == sendVirtualStickDataTimer) {
             sendVirtualStickDataTask = new SendVirtualStickDataTask();
             sendVirtualStickDataTimer = new Timer();
-            sendVirtualStickDataTimer.schedule(sendVirtualStickDataTask, 100, 200);
+            sendVirtualStickDataTimer.schedule(sendVirtualStickDataTask, 0, 100);
         }
     }
 

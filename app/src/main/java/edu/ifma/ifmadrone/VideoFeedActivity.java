@@ -119,7 +119,9 @@ public class VideoFeedActivity extends AppCompatActivity {
                     float[] r = results.getKeypointsAsTensorBuffer().getFloatArray();
                     float nose_y = r[0];
                     float nose_x = r[1];
-                    float score = r[2];
+                    float score  = r[2];
+
+
                     resultLabel.setText("X:"+nose_x+" Y:"+nose_y+" Score:"+score);
                     if(droneManualControl!=null){
                         droneManualControl.calcMovement(nose_x, nose_y, score);

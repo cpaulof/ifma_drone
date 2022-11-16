@@ -9,6 +9,7 @@ import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.tensorflow.lite.support.image.TensorImage;
@@ -28,6 +29,11 @@ public class VideoFeedActivity extends AppCompatActivity {
     TextView resultLabel;
     TextView resultLabel2;
 
+//    Button btnDance;
+//    Button btnOne;
+//    Button btnTwo;
+//    Button btnThree;
+
     private DroneManualControl droneManualControl = null;
 
 
@@ -39,6 +45,11 @@ public class VideoFeedActivity extends AppCompatActivity {
         videoFeedView = findViewById(R.id.textureView);
         resultLabel = findViewById(R.id.resultLabel);
         resultLabel2 = findViewById(R.id.resultLabel2);
+
+//        btnDance = findViewById(R.id.btnDance);
+//        btnOne = findViewById(R.id.btnOne);
+//        btnTwo = findViewById(R.id.btnTwo);
+//        btnThree = findViewById(R.id.btnThree);
 
         if(droneManualControl == null){
             droneManualControl = new DroneManualControl();
@@ -52,8 +63,6 @@ public class VideoFeedActivity extends AppCompatActivity {
         }
 
         init();
-
-
     }
 
     public void ativar(View view){
@@ -96,9 +105,6 @@ public class VideoFeedActivity extends AppCompatActivity {
                             UsbAccessoryService.VideoStreamSource.Camera);
 
                 }
-
-
-
             }
 
             @Override

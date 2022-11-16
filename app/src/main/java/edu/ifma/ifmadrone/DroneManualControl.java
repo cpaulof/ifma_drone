@@ -27,6 +27,9 @@ public class DroneManualControl {
     private Timer sendVirtualStickDataTimer;
     private SendVirtualStickDataTask sendVirtualStickDataTask;
 
+    private boolean isMoving = false;
+    private boolean canTakeControl = true;
+
     DroneManualControl(){
         Aircraft aircraft = (Aircraft) DJISDKManager.getInstance().getProduct();
         flightController = aircraft.getFlightController();
@@ -45,12 +48,15 @@ public class DroneManualControl {
                 @Override
                 public void onResult(DJIError djiError) {
                     //text.setText(djiError.getDescription());
+
                 }
             });
+
         }
     }
 
     public void enableVirtualStick(){
+        canTakeControl = true;
         if(flightController!=null){
             flightController.setVirtualStickModeEnabled(true, new CommonCallbacks.CompletionCallback() {
                 @Override
@@ -62,6 +68,7 @@ public class DroneManualControl {
     }
 
     public void disableVirtualStick(){
+        canTakeControl = false;
         if(flightController!=null){
             flightController.setVirtualStickModeEnabled(false, new CommonCallbacks.CompletionCallback() {
                 @Override
@@ -73,22 +80,31 @@ public class DroneManualControl {
     }
 
     public void calcMovement(float x, float y, float score){
-        if(score < 0.4) return;
-
-        float xOffset = x - 0.5f;
-        float yOffset = Math.abs(y - 0.5f);
-
         pitch = .0f;
         yaw = .0f;
         throttle = .0f;
         roll = .0f;
 
-        if(xOffset > 0.1)
+        if(score < 0.5) {
+         return;
+        }
+
+        float xOffset = x - 0.5f;
+        float yOffset = Math.abs(y - 0.5f);
+
+//        if(Math.abs(xOffset) > 0.4)
+//            return; // Muito a para esquerda/direita, ignorar.
+
+
+
+        if(xOffset > 0.04)
             roll = 0.2f;
-        else if(xOffset < -0.1)
+        else if(xOffset < -0.04)
             roll = -0.2f;
 
-        if (null == sendVirtualStickDataTimer) {
+
+
+        if (null == sendVirtualStickDataTimer ) {
 
             sendVirtualStickDataTask = new SendVirtualStickDataTask();
             sendVirtualStickDataTimer = new Timer();
@@ -112,12 +128,13 @@ public class DroneManualControl {
     private class SendVirtualStickDataTask extends TimerTask {
         @Override
         public void run() {
-            if (flightController != null) {
+            if (flightController != null && canTakeControl) {
+                TimerTask task = this;
                 flightController.sendVirtualStickFlightControlData(new FlightControlData(roll, pitch, yaw, throttle), new CommonCallbacks.CompletionCallback() {
                     @Override
                     public void onResult(DJIError djiError) {
                         if (djiError != null) {
-                            // asd asd
+                            //task.cancel();
                         }
                     }
                 });

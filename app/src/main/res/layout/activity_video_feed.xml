@@ -77,11 +77,12 @@
 
     <TextView
         android:id="@+id/resultLabel2"
-        android:layout_width="223dp"
-        android:layout_height="197dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="60dp"
+        android:layout_width="179dp"
+        android:layout_height="93dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="20dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/takeOff" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

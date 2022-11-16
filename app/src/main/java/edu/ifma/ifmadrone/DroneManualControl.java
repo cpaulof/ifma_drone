@@ -28,6 +28,11 @@ public class DroneManualControl {
     private SendVirtualStickDataTask sendVirtualStickDataTask;
 
     private boolean isMoving = false;
+
+    private boolean isDancing = false;
+    private int dacingCommandsSentCount = 0;
+    private int dacingDirection = 1;
+
     private boolean canTakeControl = true;
 
     DroneManualControl(){
@@ -40,6 +45,10 @@ public class DroneManualControl {
         flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
 
 
+    }
+
+    public void setDancing(boolean t){
+        isDancing = t;
     }
 
     public void takeOff(){
@@ -69,6 +78,7 @@ public class DroneManualControl {
 
     public void disableVirtualStick(){
         canTakeControl = false;
+        setNoMovement();
         if(flightController!=null){
             flightController.setVirtualStickModeEnabled(false, new CommonCallbacks.CompletionCallback() {
                 @Override
@@ -79,12 +89,15 @@ public class DroneManualControl {
         }
     }
 
-    public void calcMovement(float x, float y, float score){
+    private void setNoMovement(){
         pitch = .0f;
         yaw = .0f;
         throttle = .0f;
         roll = .0f;
+    }
 
+    public void calcMovement(float x, float y, float score){
+        setNoMovement();
         if(score < 0.5) {
          return;
         }
@@ -115,8 +128,8 @@ public class DroneManualControl {
     public void testRoll(){
         pitch = .0f;
         yaw = .0f;
-        throttle = .0f;
-        roll = .3f;
+        throttle = .2f;
+        roll = .0f;
 
         if (null == sendVirtualStickDataTimer) {
             sendVirtualStickDataTask = new SendVirtualStickDataTask();
@@ -130,6 +143,13 @@ public class DroneManualControl {
         public void run() {
             if (flightController != null && canTakeControl) {
                 TimerTask task = this;
+                if(isDancing){
+                    if(dacingCommandsSentCount == 5){
+                        dacingCommandsSentCount = 0;
+                        dacingDirection = dacingDirection > 0? -1: 1;
+
+                    }
+                }
                 flightController.sendVirtualStickFlightControlData(new FlightControlData(roll, pitch, yaw, throttle), new CommonCallbacks.CompletionCallback() {
                     @Override
                     public void onResult(DJIError djiError) {

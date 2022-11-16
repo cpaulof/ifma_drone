@@ -29,7 +29,9 @@ public class VideoFeedActivity extends AppCompatActivity {
     TextView resultLabel;
     TextView resultLabel2;
 
-//    Button btnDance;
+    Button btnDance;
+    private boolean isDancing = false;
+
 //    Button btnOne;
 //    Button btnTwo;
 //    Button btnThree;
@@ -46,7 +48,8 @@ public class VideoFeedActivity extends AppCompatActivity {
         resultLabel = findViewById(R.id.resultLabel);
         resultLabel2 = findViewById(R.id.resultLabel2);
 
-//        btnDance = findViewById(R.id.btnDance);
+        btnDance = findViewById(R.id.btnDance);
+
 //        btnOne = findViewById(R.id.btnOne);
 //        btnTwo = findViewById(R.id.btnTwo);
 //        btnThree = findViewById(R.id.btnThree);
@@ -63,6 +66,21 @@ public class VideoFeedActivity extends AppCompatActivity {
         }
 
         init();
+    }
+
+    public void toggleDance(View view){
+        isDancing = !isDancing;
+
+        if(isDancing){
+            btnDance.setText("Parar");
+            if(droneManualControl!=null){
+                droneManualControl.setDancing(true);
+            }
+        }
+        else{
+            btnDance.setText("Dancar");
+            droneManualControl.setDancing(false);
+        }
     }
 
     public void ativar(View view){

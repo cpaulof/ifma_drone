@@ -77,12 +77,22 @@
 
     <TextView
         android:id="@+id/resultLabel2"
-        android:layout_width="179dp"
-        android:layout_height="93dp"
+        android:layout_width="172dp"
+        android:layout_height="56dp"
         android:layout_marginStart="52dp"
         android:layout_marginTop="20dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/takeOff" />
+
+    <Button
+        android:id="@+id/btnDance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="28dp"
+        android:text="Dancar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultLabel2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

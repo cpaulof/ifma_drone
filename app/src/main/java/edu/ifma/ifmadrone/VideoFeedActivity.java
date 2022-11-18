@@ -30,7 +30,12 @@ public class VideoFeedActivity extends AppCompatActivity {
     TextView resultLabel2;
 
     Button btnDance;
+    Button btnDetect;
+    Button btnGesture;
+
     private boolean isDancing = false;
+    private boolean isDetecting = false;
+    private boolean isGesture = false;
 
 //    Button btnOne;
 //    Button btnTwo;
@@ -49,6 +54,8 @@ public class VideoFeedActivity extends AppCompatActivity {
         resultLabel2 = findViewById(R.id.resultLabel2);
 
         btnDance = findViewById(R.id.btnDance);
+        btnDetect = findViewById(R.id.btnDetect);
+        btnGesture = findViewById(R.id.btnGesture);
 
 //        btnOne = findViewById(R.id.btnOne);
 //        btnTwo = findViewById(R.id.btnTwo);
@@ -66,6 +73,22 @@ public class VideoFeedActivity extends AppCompatActivity {
         }
 
         init();
+    }
+
+    public void toggleDetecting(View view) {
+        isDetecting = !isDetecting;
+        if(droneManualControl!=null){
+            droneManualControl.setDetecting(isDetecting);
+        }
+        btnDetect.setText(isDetecting?"Parar": "Detectar");
+    }
+
+    public void toggleGesture(View view){
+        isGesture = !isGesture;
+        if(droneManualControl!=null){
+            droneManualControl.setGestureActionActive(isGesture);
+        }
+        btnGesture.setText(isGesture?"Parar": "Gestos");
     }
 
     public void toggleDance(View view){
@@ -147,8 +170,11 @@ public class VideoFeedActivity extends AppCompatActivity {
 
 
                     resultLabel.setText("X:"+nose_x+" Y:"+nose_y+" Score:"+score);
+
                     if(droneManualControl!=null){
                         droneManualControl.calcMovement(nose_x, nose_y, score);
+                        resultLabel2.setText(droneManualControl.debugGetAttrs());
+                        droneManualControl.updateGestures(r);
                     }
                 }
             }

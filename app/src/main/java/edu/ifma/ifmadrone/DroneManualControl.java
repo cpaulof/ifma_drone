@@ -28,6 +28,10 @@ public class DroneManualControl {
     private SendVirtualStickDataTask sendVirtualStickDataTask;
 
     private boolean isMoving = false;
+    private boolean isDetecting = false;
+
+    private int gestureAction = 0;
+    private boolean gestureActionActive = false;
 
     private boolean isDancing = false;
     private int dacingCommandsSentCount = 0;
@@ -49,6 +53,18 @@ public class DroneManualControl {
 
     public void setDancing(boolean t){
         isDancing = t;
+        setNoMovement();
+        startSendDataTaskTimer();
+    }
+
+    public void setDetecting(boolean t){
+        setNoMovement();
+        isDetecting = t;
+    }
+
+    public void setGestureActionActive(boolean t){
+        setNoMovement();
+        gestureActionActive = t;
     }
 
     public void takeOff(){
@@ -76,6 +92,36 @@ public class DroneManualControl {
         }
     }
 
+    public void updateGestures(float[] r){
+        int leftWrist = 27;
+        int rightWrist = 30;
+        int nose = 0;
+
+        float yLeftWrist = r[leftWrist+1];
+        float leftWristScore = r[leftWrist+2];
+
+        float yRightWrist = r[rightWrist+1];
+        float rightWristScore = r[rightWrist+2];
+
+        float yNose = r[nose+1];
+        float noseScore = r[nose+2];
+
+        // Gesture Action
+        // 0 -> Nada
+        // 1 -> Subir
+        // 2 -> Descer
+        if(noseScore<0.5 || rightWristScore < 0.5 || leftWristScore < 0.5){
+            gestureAction = 0;
+            return;
+        }
+        if(yLeftWrist > yNose && yRightWrist < yNose)
+            gestureAction = 2;
+        else if(yRightWrist > yNose && yLeftWrist < yNose)
+            gestureAction = 1;
+        else
+            gestureAction = 0;
+    }
+
     public void disableVirtualStick(){
         canTakeControl = false;
         setNoMovement();
@@ -92,37 +138,39 @@ public class DroneManualControl {
     private void setNoMovement(){
         pitch = .0f;
         yaw = .0f;
-        throttle = .0f;
+        //throttle = .0f;
         roll = .0f;
     }
 
     public void calcMovement(float x, float y, float score){
         setNoMovement();
-        if(score < 0.5) {
+        if(score < 0.5 || !isDetecting) {
          return;
         }
 
         float xOffset = x - 0.5f;
         float yOffset = Math.abs(y - 0.5f);
 
-//        if(Math.abs(xOffset) > 0.4)
-//            return; // Muito a para esquerda/direita, ignorar.
-
-
-
         if(xOffset > 0.04)
             roll = 0.2f;
         else if(xOffset < -0.04)
             roll = -0.2f;
 
+        startSendDataTaskTimer();
+    }
 
-
-        if (null == sendVirtualStickDataTimer ) {
-
+    private void startSendDataTaskTimer(){
+        if (null == sendVirtualStickDataTimer) {
             sendVirtualStickDataTask = new SendVirtualStickDataTask();
             sendVirtualStickDataTimer = new Timer();
             sendVirtualStickDataTimer.schedule(sendVirtualStickDataTask, 0, 100);
         }
+    }
+
+    public String debugGetAttrs(){
+        return "Pitch:"+pitch+" Yaw:"+yaw+" Throttle:"+throttle+" Roll:"+roll+" Dacing:"+
+                isDancing+" D:"+dacingDirection+" Count:"+dacingCommandsSentCount+
+                " Gesto:"+gestureAction;
     }
 
     public void testRoll(){
@@ -142,14 +190,31 @@ public class DroneManualControl {
         @Override
         public void run() {
             if (flightController != null && canTakeControl) {
-                TimerTask task = this;
+
+
+                //danca
                 if(isDancing){
                     if(dacingCommandsSentCount == 5){
                         dacingCommandsSentCount = 0;
                         dacingDirection = dacingDirection > 0? -1: 1;
-
                     }
+                    throttle = 0.2f * dacingDirection;
+                    dacingCommandsSentCount++;
+                } else throttle = 0.0f;
+
+                //gestos
+
+                if(gestureActionActive){
+                    if(gestureAction == 1)
+                        throttle = 0.2f;
+                    else if(gestureAction == 2)
+                        throttle = -0.2f;
+                    else
+                        throttle = 0;
                 }
+                else throttle = 0;
+
+
                 flightController.sendVirtualStickFlightControlData(new FlightControlData(roll, pitch, yaw, throttle), new CommonCallbacks.CompletionCallback() {
                     @Override
                     public void onResult(DJIError djiError) {
